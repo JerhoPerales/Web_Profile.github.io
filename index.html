@@ -44,7 +44,7 @@
             <div class="projects-grid">
 
                 <div class="projects-item">
-                    <div class="projects-image" onclick="openModal('Assets/necosite_full.gif', 'A Silly website')">
+                    <div class="projects-image" onclick="openModal('Assets/necosite.gif', 'A Silly Website', 'A fun little website built just for laughs. It features a quirky UI with playful animations and interactions — a creative exercise in HTML, CSS, and JavaScript.', ['HTML', 'CSS', 'JavaScript'])">
                         <img src="Assets/necosite.gif" >
                     </div>
                     <h3>A Silly website</h3>
@@ -56,7 +56,7 @@
                 </div>
             
                 <div class="projects-item">
-                    <div class="projects-image" onclick="openModal('Assets/student_db_full.gif', 'A Simple Student DB')">
+                    <div class="projects-image" onclick="openModal('Assets/student_db.gif', 'A Simple Student DB', 'A student database management system with login, record viewing, and basic CRUD operations. Built using PHP for the backend and MySQL for data storage.', ['Database', 'PHP', 'MySQL'])">
                         <img src="Assets/student_db.gif" >
                     </div>
                     <h3>A Simple Student DB</h3>
@@ -86,12 +86,64 @@
     </section>
 
     <!-- Modal -->
-    <div id="imageModal" class="modal" onclick="closeModal()">
-        <span class="modal-close">&times;</span>
-        <img class="modal-content" id="modalImage">
-        <div class="modal-caption" id="modalCaption"></div>
+    <div id="imageModal" class="modal-overlay" onclick="handleOverlayClick(event)">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeModal()">&#x2715;</button>
+            <div class="modal-left">
+                <img id="modalImage" src="" alt="Project preview">
+            </div>
+            <div class="modal-right">
+                <p class="modal-label">Project</p>
+                <h2 id="modalTitle"></h2>
+                <p id="modalDescription"></p>
+                <div class="modal-tags" id="modalTags"></div>
+            </div>
+        </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        function openModal(src, title, description, tags) {
+            const overlay = document.getElementById('imageModal');
+            document.getElementById('modalImage').src = src;
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalDescription').textContent = description;
+            const tagsEl = document.getElementById('modalTags');
+            tagsEl.innerHTML = tags.map(t => `<span class="modal-tag">${t}</span>`).join('');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('imageModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function handleOverlayClick(e) {
+            if (e.target === document.getElementById('imageModal')) closeModal();
+        }
+
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+        // Active nav link on scroll
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.scrollY >= sectionTop) current = section.getAttribute('id');
+            });
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) link.classList.add('active');
+            });
+        });
+
+        document.getElementById('menuToggle').addEventListener('click', () => {
+            const nav = document.getElementById('navLinks');
+            nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
+        });
+    </script>
 </body>
 </html>
